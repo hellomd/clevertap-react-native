@@ -6,9 +6,9 @@
 
 #import <React/RCTLog.h>
 
-#import <CleverTap-iOS-SDK/CleverTap.h>
-#import <CleverTap-iOS-SDK/CleverTapSyncDelegate.h>
-#import <CleverTap-iOS-SDK/CleverTapInAppNotificationDelegate.h>
+#import <CleverTapSDK/CleverTap.h>
+#import <CleverTapSDK/CleverTapSyncDelegate.h>
+#import <CleverTapSDK/CleverTapInAppNotificationDelegate.h>
 
 
 @interface CleverTapReactManager() <CleverTapSyncDelegate, CleverTapInAppNotificationDelegate> {
@@ -59,7 +59,7 @@
     if(!cleverTapID) {
         return;
     }
-    
+
     [self postNotificationWithName:kCleverTapProfileDidInitialize andBody:@{@"CleverTapID":cleverTapID}];
 }
 
@@ -73,17 +73,17 @@
 #pragma mark CleverTapInAppNotificationDelegate
 
 -(void)inAppNotificationDismissedWithExtras:(NSDictionary *)extras andActionExtras:(NSDictionary *)actionExtras {
-    
+
     NSMutableDictionary *body = [NSMutableDictionary new];
-    
+
     if (extras != nil) {
         body[@"extras"] = extras;
     }
-    
+
     if (actionExtras != nil) {
         body[@"actionExtras"] = actionExtras;
     }
-    
+
     [self postNotificationWithName:kCleverTapInAppNotificationDismissed andBody:body];
 }
 

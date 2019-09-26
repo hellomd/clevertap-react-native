@@ -1,9 +1,9 @@
 #import "CleverTapReact.h"
 #import "CleverTapReactManager.h"
-#import <CleverTap-iOS-SDK/CleverTap.h>
-#import <CleverTap-iOS-SDK/CleverTap+Inbox.h>
-#import <CleverTap-iOS-SDK/CleverTapEventDetail.h>
-#import <CleverTap-iOS-SDK/CleverTapUTMDetail.h>
+#import <CleverTapSDK/CleverTap.h>
+#import <CleverTapSDK/CleverTap+Inbox.h>
+#import <CleverTapSDK/CleverTapEventDetail.h>
+#import <CleverTapSDK/CleverTapUTMDetail.h>
 
 #import <UserNotifications/UserNotifications.h>
 #import <CoreLocation/CoreLocation.h>
@@ -60,7 +60,7 @@ RCT_EXPORT_METHOD(registerForPush) {
                                       });
                                   }
                               }];
-        
+
     }
     else {
         UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeAlert | UIUserNotificationTypeSound) categories:nil];
@@ -152,7 +152,7 @@ RCT_EXPORT_METHOD(getEventHistory:(RCTResponseSenderBlock)callback) {
     RCTLogInfo(@"[CleverTap getEventHistory]");
     NSDictionary *history = [[CleverTap sharedInstance] userGetEventHistory];
     NSMutableDictionary *result = [NSMutableDictionary new];
-    
+
     for (NSString *eventName in [history keyEnumerator]) {
         CleverTapEventDetail *detail = history[eventName];
         NSDictionary * _inner = [self _eventDetailToDict:detail];
@@ -326,80 +326,80 @@ RCT_EXPORT_METHOD(setDebugLevel:(int)level) {
 
 - (NSDictionary*)_eventDetailToDict:(CleverTapEventDetail*)detail {
     NSMutableDictionary *_dict = [NSMutableDictionary new];
-    
+
     if(detail) {
         if(detail.eventName) {
             [_dict setObject:detail.eventName forKey:@"eventName"];
         }
-        
+
         if(detail.firstTime){
             [_dict setObject:@(detail.firstTime) forKey:@"firstTime"];
         }
-        
+
         if(detail.lastTime){
             [_dict setObject:@(detail.lastTime) forKey:@"lastTime"];
         }
-        
+
         if(detail.count){
             [_dict setObject:@(detail.count) forKey:@"count"];
         }
     }
-    
+
     return _dict;
 }
 
 - (NSDictionary*)_utmDetailToDict:(CleverTapUTMDetail*)detail {
     NSMutableDictionary *_dict = [NSMutableDictionary new];
-    
+
     if(detail) {
         if(detail.source) {
             [_dict setObject:detail.source forKey:@"source"];
         }
-        
+
         if(detail.medium) {
             [_dict setObject:detail.medium forKey:@"medium"];
         }
-        
+
         if(detail.campaign) {
             [_dict setObject:detail.campaign forKey:@"campaign"];
         }
     }
-    
+
     return _dict;
 }
 
 - (NSDictionary *)formatProfile:(NSDictionary *)profile {
     NSMutableDictionary *_profile = [NSMutableDictionary new];
-    
+
     for (NSString *key in [profile keyEnumerator]) {
         id value = [profile objectForKey:key];
-        
+
         if([key isEqualToString:@"DOB"]) {
-            
+
             NSDate *dob = nil;
-            
+
             if([value isKindOfClass:[NSString class]]) {
-                
+
                 if(!dateFormatter) {
                     dateFormatter = [[NSDateFormatter alloc] init];
                     [dateFormatter setDateFormat:@"yyyy-MM-dd"];
                 }
-                
+
                 dob = [dateFormatter dateFromString:value];
-                
+
             }
             else if ([value isKindOfClass:[NSNumber class]]) {
                 dob = [NSDate dateWithTimeIntervalSince1970:[value doubleValue]];
             }
-            
+
             if(dob) {
                 value = dob;
             }
         }
-        
+
         [_profile setObject:value forKey:key];
     }
-    
+
     return _profile;
 }
 
